@@ -1,15 +1,15 @@
 import React, {useState,useEffect} from 'react';
 
 export default function ScoreTester({setScore, oldScores}){
+    const [val, setVal] = useState('');
     function handleS(e){
         e.preventDefault();
-        let out = oldScores.push(val);
+        let out = [...oldScores, val]
         setScore(out);
     }
-    let val;
     function handleC(e){
         e.preventDefault();
-        val = e.target.value;
+        setVal(e.target.value);
     }
     return(
         <form action="" onSubmit={handleS}>
