@@ -1,10 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
-import CurScore from './components/CurScore';
-import BestScore from './components/BestScore';
-import ScoreTester from './components/ScoreTester';
-import Card from './components/Card';
-import {useState,useEffect} from 'react';
+import logo from "./logo.svg";
+import "./App.css";
+import CurScore from "./components/CurScore";
+import BestScore from "./components/BestScore";
+import ScoreTester from "./components/ScoreTester";
+import Card from "./components/Card";
+import { useState, useEffect } from "react";
+import Instruct from "./components/Instruct";
 
 function App() {
   const [pastScores, setPastScores] = useState([]);
@@ -17,31 +18,39 @@ function App() {
   }
   useEffect(() => {
     let initialCards = [];
-    for(let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
       initialCards.push(getRandomCapitalLetter());
     }
     setCards(initialCards);
-  }, [])
+  }, []);
   useEffect(() => {
-    setPastScores([...pastScores, score]);
-  }, [score])
-  function useLetter(l){
-    if(usedLetters.includes(l)){
+    setPastScores((prevScores) => [...prevScores, score]);
+  }, [score]);
+  function useLetter(l) {
+    if (usedLetters.includes(l)) {
       setScore(0);
+    } else {
+      setUsedLetters((prevUsedLetters) => [...prevUsedLetters, l]);
+      setScore((prevScore) => prevScore + 1);
     }
-    else{
-      setUsedLetters(prevUsedLetters => [...prevUsedLetters, l]);
-      setScore(prevScore => prevScore + 1);
-    }
+    setCards((prevCards) => {
+      const newCards = [...prevCards];
+      newCards.splice(l.index, 1);
+      newCards.push(getRandomCapitalLetter());
+      return newCards;
+    });
   }
   return (
     <div className="App">
-      <CurScore score={score}/>
+      <Instruct></Instruct>
+      <CurScore score={score} />
       <BestScore pastScores={pastScores} />
       {/*<ScoreTester oldScores = {pastScores} setScore={setPastScores}/>*/}
       {/*<Card letter={'A'}/>*/}
       <div className="container">
-        {cards.map((card, i) => <Card key={i} letter={card} handlePick={useLetter}/>)}
+        {cards.map((card, i) => (
+          <Card key={i} letter={card} handlePick={useLetter} />
+        ))}
       </div>
     </div>
   );
